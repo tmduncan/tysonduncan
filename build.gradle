@@ -1,0 +1,71 @@
+description = "Tysonduncan.com - Computer Science Projects"
+
+ext.spec = [
+        name: 'tysonduncan-dependencies',
+        group: 'com.tysonduncan',
+        version: '1.0.0',
+
+        versions: [
+                SPRING_VERSION: '4.0.2.RELEASE'
+        ]
+]
+
+
+
+spec.external = [
+    COMMONS_LANG: 'org.apache.commons:commons-lang3:3.3',
+    COMMONS_COLLECTIONS: 'org.apache.commons:commons-collections4:4.0',
+    SPRING_CONTEXT: "org.springframework:spring-context:${spec.versions.SPRING_VERSION}",
+    SPRING_CONTEXT_SUPPORT: "org.springframework:spring-context-support:${spec.versions.SPRING_VERSION}"
+
+]
+
+configurations.all {
+    resolutionStrategy {
+        failOnVersionConflict()
+    }
+}
+
+allprojects {
+    apply plugin: 'java'
+    apply plugin: 'idea'
+
+    project.buildDir = 'target'
+
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+
+    repositories {
+        mavenCentral()
+    }
+
+    test {
+        exclude '**/*Integration*'
+        exclude '**/*.groovy'
+    }
+
+    dependencies {
+        compile spec.external.COMMONS_LANG
+        compile spec.external.COMMONS_COLLECTIONS
+    }
+
+}
+
+idea {
+    module {
+        jdkName = '1.8'
+        outputDir = file('target')
+    }
+}
+
+project (':server'){
+    apply plugin: 'war'
+    dependencies {
+
+        compile project(':structures')
+        compile project(':algorithms')
+        compile project(':patterns')
+    }
+}
+
+
